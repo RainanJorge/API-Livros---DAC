@@ -4,7 +4,7 @@ import com.rainan.livros.application.LivroService;
 import com.rainan.livros.application.exceptions.BookAlreadyExistsException;
 import com.rainan.livros.application.exceptions.BookNotFoundException;
 import com.rainan.livros.domain.Livro;
-import com.rainan.livros.infrastructure.LivroRepositoryImplementation;
+import com.rainan.livros.domain.LivroRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -17,12 +17,12 @@ import static org.mockito.Mockito.*;
 
 class LivroApplicationTests {
 
-    private LivroRepositoryImplementation repo;
+    private LivroRepository repo;
     private LivroService service;
 
     @BeforeEach
     void setup() {
-        repo = Mockito.mock(LivroRepositoryImplementation.class);
+        repo = Mockito.mock(LivroRepository.class);
         service = new LivroService(repo);
     }
 

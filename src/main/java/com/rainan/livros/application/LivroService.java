@@ -3,7 +3,7 @@ package com.rainan.livros.application;
 import com.rainan.livros.application.exceptions.BookAlreadyExistsException;
 import com.rainan.livros.application.exceptions.BookNotFoundException;
 import com.rainan.livros.domain.Livro;
-import com.rainan.livros.infrastructure.LivroRepositoryImplementation;
+import com.rainan.livros.domain.LivroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,10 +12,10 @@ import java.util.List;
 
 @Service
 public class LivroService {
-    private final LivroRepositoryImplementation repo;
+    private final LivroRepository repo;
 
     @Autowired
-    public LivroService(LivroRepositoryImplementation repo) {
+    public LivroService(LivroRepository repo) {
         this.repo = repo;
     }
 
