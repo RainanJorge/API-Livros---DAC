@@ -6,13 +6,20 @@ import com.rainan.livros.domain.Livro;
 import com.rainan.livros.infrastructure.LivroRepositoryImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class LivroService {
+    private final LivroRepositoryImplementation repo;
 
     @Autowired
-    private LivroRepositoryImplementation repo;
+    public LivroService(LivroRepositoryImplementation repo) {
+        this.repo = repo;
+    }
 
+    @Transactional
     public Livro criarLivro(Livro livro) {
         if (repo.findByIsbn(livro.getIsbn()).isPresent()) {
             throw new BookAlreadyExistsException(livro.getIsbn());
@@ -20,27 +27,37 @@ public class LivroService {
         return repo.save(livro);
     }
 
-    public void deletarLivro(Livro livro) {
-        if (repo.findById(livro.getId()).isEmpty()) {
-            throw new BookNotFoundException(livro.getId());
-        }
-        else {
-            repo.delete(livro);
-        }
+    @Transactional
+    public void deletarLivro(Long id) {
+        Livro livro = repo.findById(id).orElseThrow(() -> new BookNotFoundException(id));
+
+        repo.delete(livro);
     }
 
+    @Transactional(readOnly = true)
+    public List<Livro> findAll() {
+        return repo.findAll();
+    }
+
+    @Transactional(readOnly = true)
     public Livro getBookById(Long id) {
         return repo.findById(id).orElseThrow(() -> new BookNotFoundException(id));
     }
 
+    @Transactional(readOnly = true)
     public Livro getBookByIsbn(String isbn) {
         return repo.findByIsbn(isbn).orElseThrow(() -> new BookNotFoundException(isbn));
     }
 
-    public Livro atualizarLivro(Livro livro) {
-        if (repo.findById(livro.getId()).isEmpty()) {
-            throw new BookNotFoundException(livro.getId());
-        }
-        return repo.save(livro);
+    @Transactional
+    public Livro atualizarLivro(Long id, Livro dados) {
+        Livro existente = repo.findById(id).orElseThrow(() -> new BookNotFoundException(id));
+
+        existente.setTitle(dados.getTitle());
+        existente.setAuthor(dados.getAuthor());
+        existente.setPublicationYear(dados.getPublicationYear());
+        existente.setStockQuantity(dados.getStockQuantity());
+
+        return repo.save(existente);
     }
 }
